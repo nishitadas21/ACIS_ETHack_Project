@@ -1,0 +1,42 @@
+[
+  {
+    "content": "Introducing our fintech app with potential returns for students.",
+    "scores": {
+      "brand_alignment": 50,
+      "compliance_risk": 10,
+      "engagement_score": 60
+    }
+  },
+  {
+    "content": "Introducing our fintech app with potential returns for students.",
+    "scores": {
+      "brand_alignment": 100,
+      "compliance_risk": 10,
+      "engagement_score": 60
+    }
+  },
+  {
+    "content": "Introducing our fintech app with potential returns for students. Start your financial journey today! Join now and explore smarter investing.",
+    "scores": {
+      "brand_alignment": 84,
+      "compliance_risk": 10,
+      "engagement_score": 60
+    }
+  },
+  {
+    "content": "Introducing our fintech app with potential returns for students! Start your financial journey today!",
+    "scores": {
+      "brand_alignment": 93,
+      "compliance_risk": 10,
+      "engagement_score": 100
+    }
+  },
+  {
+    "content": "Introducing our fintech app with potential returns for students! Start your financial journey today!",
+    "scores": {
+      "brand_alignment": 100,
+      "compliance_risk": 10,
+      "engagement_score": 100
+    }
+  }
+]

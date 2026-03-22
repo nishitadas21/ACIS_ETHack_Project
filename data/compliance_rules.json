@@ -1,0 +1,7 @@
+{
+  "banned_phrases": ["guaranteed returns", "100% safe"],
+  "suggestions": {
+    "guaranteed returns": "potential returns",
+    "100% safe": "highly secure"
+  }
+}
