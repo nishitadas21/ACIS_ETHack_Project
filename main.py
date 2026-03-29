@@ -1,128 +1,76 @@
-from agents.creative import generate_content
-from agents.auditor import check_compliance
-from agents.fixer import fix_content
-from agents.debate import performance_agent, compliance_agent, judge_agent
-from agents.risk import risk_confidence_score
-from agents.learning import learning_agent
+"""
+CLI runner for the multi-agent content pipeline (mirrors POST /generate).
+
+Usage:
+    python main.py
+    python main.py --prompt "Your enterprise content brief"
+"""
+
+from __future__ import annotations
+
+import argparse
 import json
 
-
-def save_feedback(content, scores):
-    data = {
-        "content": content,
-        "scores": scores
-    }
-
-    try:
-        with open("memory/feedback.json", "r") as f:
-            existing = json.load(f)
-    except:
-        existing = []
-
-    existing.append(data)
-
-    with open("memory/feedback.json", "w") as f:
-        json.dump(existing, f, indent=2)
+from content_pipeline import run_content_pipeline
 
 
-# ---------------- INITIAL PROMPT ----------------
-prompt = "Write a fintech product launch post"
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Enterprise content operations multi-agent pipeline")
+    parser.add_argument(
+        "--prompt",
+        type=str,
+        default=(
+            "Launch blog: AI-assisted content operations platform for regulated industries. "
+            "Mention workflow automation, brand governance, and analytics."
+        ),
+        help="Content brief for the Creative Agent",
+    )
+    parser.add_argument(
+        "--spec-file",
+        type=str,
+        default=None,
+        help="Optional path to JSON file merged as product_spec (knowledge-to-content)",
+    )
+    parser.add_argument("--json", action="store_true", help="Print full JSON to stdout")
+    args = parser.parse_args()
 
-# ---------------- LEARNING PHASE (BEFORE GENERATION) ----------------
-learning = learning_agent(prompt)
+    spec = None
+    if args.spec_file:
+        import json as _json
+        from pathlib import Path as _P
 
-print("\n--- LEARNING PHASE ---")
-print("Insight:", learning["insight"])
-print("Suggestion:", learning["suggestion"])
+        spec = _json.loads(_P(args.spec_file).read_text(encoding="utf-8"))
 
-# Improve prompt using learning
-enhanced_prompt = prompt + ". " + learning["suggestion"]
+    result = run_content_pipeline(args.prompt, product_spec=spec)
 
+    if args.json:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        return
 
-# ---------------- STEP 1: GENERATE ----------------
-content = generate_content(enhanced_prompt)
-print("\nGenerated:", content)
+    print("\n=== SCENARIO ===")
+    print(result["final_decision"])
 
-
-# ---------------- STEP 2: COMPLIANCE CHECK ----------------
-issues = check_compliance(content)
-
-if issues:
-    print("Issues found:", issues)
-    content = fix_content(content, issues)
-    print("Fixed:", content)
-else:
-    print("No issues")
-
-print("\n--- FINAL OUTPUT ---")
-print(content)
-
-
-# ---------------- STEP 3: DEBATE SYSTEM ----------------
-print("\n--- DEBATE PHASE ---")
-
-perf = performance_agent(content)
-comp = compliance_agent(content)
-
-print("Performance Agent:", perf["feedback"])
-print("Compliance Agent:", comp["feedback"])
-
-decision = judge_agent(content, perf, comp)
-
-final_content = decision["final_content"]
-
-print("\n--- FINAL DECISION ---")
-print(final_content)
-print("Reason:", decision["reason"])
-
-
-# ---------------- STEP 4: RISK & CONFIDENCE ----------------
-print("\n--- RISK & CONFIDENCE SCORES ---")
-
-scores = risk_confidence_score(final_content)
-
-print("Brand Alignment:", scores["brand_alignment"], "%")
-print("Compliance Risk:", scores["compliance_risk"], "%")
-print("Engagement Score:", scores["engagement_score"], "%")
+    print("\n=== BLOG ===")
+    print(result["blog"][:1200])
+    print("\n=== SOCIAL ===")
+    for i, s in enumerate(result["social_posts"], 1):
+        print(f"{i}. {s}")
+    print("\n=== FAQ ===")
+    print(result["faq"][:800])
+    print("\n=== HINDI (blog localization) ===")
+    print((result["localized_version"] or "")[:800])
+    print("\n=== SCORES ===")
+    print(result["scores"])
+    print("\n=== PUBLISHING (simulated) ===")
+    print(json.dumps(result["publishing_output"], indent=2))
+    print("\n=== IMPACT ===")
+    print(json.dumps(result.get("impact"), indent=2))
+    print("\n=== CALENDAR ===")
+    print(json.dumps(result.get("content_calendar"), indent=2))
+    print("\n=== PIPELINE LOG (last 5) ===")
+    for row in (result.get("pipeline_logs") or [])[-5:]:
+        print(row["agent"], "-", row["message"])
 
 
-# ---------------- SAVE MEMORY ----------------
-save_feedback(final_content, scores)
-
-
-# ---------------- BUSINESS IMPACT ----------------
-print("\n--- BUSINESS IMPACT ---")
-print("Content Cycle Time Reduced: 70%")
-print("Compliance Errors Reduced: 90%")
-print("Engagement Improved: 40% (simulated)")
-
-
-# ---------------- STEP 5: SELF-HEALING SYSTEM ----------------
-
-# Brand Fix
-if scores["brand_alignment"] < 60:
-    print("\n--- BRAND DRIFT DETECTED ---")
-    print("Re-generating content to align with brand...")
-
-    content = generate_content("Rewrite to be more professional and brand aligned")
-
-    issues = check_compliance(content)
-    if issues:
-        content = fix_content(content, issues)
-
-    print("\n--- SELF-HEALED OUTPUT ---")
-    print(content)
-
-
-# Engagement Fix
-if scores["engagement_score"] < 70:
-    print("\n--- LOW ENGAGEMENT DETECTED ---")
-    print("Optimizing content for engagement...")
-
-    improved = performance_agent(content)
-
-    if "suggested_content" in improved:
-        content = improved["suggested_content"]
-
-    print("\n--- FINAL OPTIMIZED OUTPUT ---")
-    print(content)
+if __name__ == "__main__":
+    main()

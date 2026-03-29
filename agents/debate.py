@@ -1,71 +1,75 @@
-# agents/debate.py
+"""
+Multi-agent debate: Performance output vs Compliance Advocate.
 
-def performance_agent(content):
+Judge Agent selects a final composite that favors compliance when scores diverge.
+"""
+
+
+def compliance_advocate_agent(content: str) -> dict:
     """
-    Focus: Improve engagement, emotional appeal, CTA
+    Compliance Advocate (debate participant) — tightens tone and scrubs risky patterns.
+    Distinct from the Compliance Agent (auditor) that runs rule checks in auditor.py.
     """
+    risky = ["guaranteed", "100%", "risk-free", "instant profit", "no risk"]
+    flagged: list[str] = []
+    cleaned = content
 
-    improved_content = content
-
-    # 1. Add emotional hook
-    if not any(word in content.lower() for word in ["discover", "unlock", "introducing"]):
-        improved_content = "Discover " + improved_content
-
-    # 2. Add CTA if missing
-    if not any(word in content.lower() for word in ["join", "start", "explore"]):
-        improved_content += " Start your financial journey today!"
-
-    # 3. Make it more conversational
-    if "." in improved_content:
-        improved_content = improved_content.replace(".", "!")
-
-    # 4. Add urgency
-    if "today" not in improved_content.lower():
-        improved_content += " Don't miss out!"
-
-    return {
-        "agent": "performance",
-        "feedback": "Enhanced emotional appeal, urgency, and CTA for higher engagement.",
-        "suggested_content": improved_content,
-        "score": 85
-    }
-
-
-def compliance_agent(content):
-    """
-    Focus: Ensure content is safe and compliant
-    """
-
-    risky_words = ["guaranteed", "100%", "risk-free", "instant profit"]
-    flagged = []
-    cleaned_content = content
-
-    for word in risky_words:
-        if word in content.lower():
+    for word in risky:
+        if word in cleaned.lower():
             flagged.append(word)
-            cleaned_content = cleaned_content.replace(word, "potential")
+            cleaned = cleaned.replace(word, "[redacted: strong claim]")
+
+    # Soften absolute language slightly in body copy
+    replacements = {
+        "always": "typically",
+        "never fails": "aims to reduce failure modes",
+    }
+    for a, b in replacements.items():
+        if a in cleaned.lower():
+            idx = cleaned.lower().find(a)
+            if idx != -1:
+                cleaned = cleaned[:idx] + b + cleaned[idx + len(a) :]
+
+    score = 92 if not flagged else max(55, 92 - len(flagged) * 12)
 
     return {
-        "agent": "compliance",
-        "feedback": f"Checked compliance. Flagged terms: {flagged}" if flagged else "Content is compliant.",
-        "suggested_content": cleaned_content,
-        "score": 90 if not flagged else 60
+        "agent": "compliance_advocate",
+        "feedback": "Debate stance: prioritize safe language and auditable claims."
+        + (f" Flagged: {flagged}" if flagged else ""),
+        "suggested_content": cleaned,
+        "score": score,
     }
 
 
-def judge_agent(original_content, perf, comp):
+def judge_agent(original_content: str, perf: dict, advocate: dict) -> dict:
     """
-    Final decision maker: balances engagement vs compliance
+    Judge Agent — balances engagement (performance) vs conservative stance (advocate).
     """
+    perf_score = int(perf.get("score") or 0)
+    adv_score = int(advocate.get("score") or 0)
 
-    if comp["score"] < 70:
-        final = comp["suggested_content"]
-        reason = "Compliance issues detected, prioritizing safe content."
+    if adv_score < 70:
+        final = advocate.get("suggested_content", original_content)
+        winner = "compliance_advocate"
+        reason = "Compliance advocate flagged material issues; selecting the safer variant."
+    elif perf_score >= adv_score + 5:
+        final = perf.get("suggested_content", original_content)
+        winner = "performance"
+        reason = "Content is within tolerance; prioritizing the engagement-optimized variant."
     else:
-        final = perf["suggested_content"]
-        reason = "Content is compliant, optimized for engagement."
+        # Blend: take advocate text but keep performance hook if present
+        final = advocate.get("suggested_content", original_content)
+        perf_text = perf.get("suggested_content", "")
+        first_block = perf_text.split("\n\n", 1)[0] if perf_text else ""
+        if first_block and len(first_block) < 260:
+            body = final.split("\n\n", 1)[-1]
+            final = f"{first_block}\n\n{body}"
+        winner = "hybrid"
+        reason = "Hybrid decision: preserve engagement lead-in with advocate-cleaned body."
 
     return {
         "final_content": final,
-        "reason": reason
+        "reason": reason,
+        "winner": winner,
+        "original_content": original_content,
     }

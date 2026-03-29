@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ACIS Content Command — Enterprise Content Operations</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="hilModal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="hilTitle">
+      <div class="modal-card">
+        <h2 id="hilTitle">Manual approval required</h2>
+        <p class="modal-text">Manual approval required due to compliance risk. Escalated to human review.</p>
+        <p class="modal-meta" id="hilCheckpoint"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="hilReject">Reject — regenerate</button>
+          <button type="button" class="btn" id="hilApprove">Approve — continue</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" hidden aria-live="polite" aria-busy="false">
+      <div class="loading-card">
+        <div class="spinner" aria-hidden="true"></div>
+        <div class="loading-title">Processing…</div>
+        <div class="loading-sub" id="loadingSub">Running multi-agent pipeline.</div>
+      </div>
+    </div>
+
+    <nav class="top-nav" aria-label="Primary">
+      <div class="nav-brand">
+        <span class="nav-logo"></span>
+        <span class="nav-title">ACIS Content Command</span>
+      </div>
+      <div class="nav-tabs" role="tablist">
+        <button type="button" class="nav-tab active" role="tab" aria-selected="true" data-tab="dashboard">Dashboard</button>
+        <button type="button" class="nav-tab" role="tab" aria-selected="false" data-tab="architecture">Architecture</button>
+        <button type="button" class="nav-tab" role="tab" aria-selected="false" data-tab="impact">Impact Model</button>
+        <button type="button" class="nav-tab" role="tab" aria-selected="false" data-tab="about">About</button>
+      </div>
+    </nav>
+
+    <main id="panel-dashboard" class="tab-panel is-active" role="tabpanel" data-panel="dashboard">
+      <div class="shell">
+        <header class="topbar">
+          <div class="brand">
+            <div class="logo" aria-hidden="true"></div>
+            <div>
+              <h1>Operations dashboard</h1>
+              <p>Visual agent flow, live routing, compliance gates, and audit visibility.</p>
+            </div>
+          </div>
+          <div class="pill-row">
+            <span class="pill"><strong>Track</strong> AI for Enterprise Content Operations</span>
+            <span class="pill"><strong>ET</strong> Hackathon 2026</span>
+          </div>
+        </header>
+
+        <section class="panel panel-workflow">
+          <h2>Agent workflow</h2>
+          <p class="muted small">States: idle → running → complete. Active step is highlighted (~0.65s simulated pacing).</p>
+          <div class="workflow-scroll">
+            <div class="workflow-row" id="agentWorkflow" aria-label="Agent pipeline"></div>
+          </div>
+          <div class="routing-ticker" id="routingTicker">
+            <span class="routing-label">Model router</span>
+            <span class="routing-value" id="routingValue">Awaiting run…</span>
+          </div>
+        </section>
+
+        <div class="grid">
+          <section class="panel">
+            <h2>Run pipeline</h2>
+            <p class="muted">
+              <strong>Quick demo:</strong> calls <code>GET /run-agent</code>. Enable <strong>interactive gate</strong> to use
+              <code>POST /generate</code> with human-in-the-loop pause on severe compliance failure.
+            </p>
+
+            <label class="check-row">
+              <input type="checkbox" id="interactiveHil" />
+              <span>Interactive compliance gate (POST /generate + HIL modal)</span>
+            </label>
+
+            <label for="prompt">Content brief</label>
+            <textarea
+              id="prompt"
+              placeholder="Used when interactive gate is on. Quick demo ignores this and uses server scenario."
+            ></textarea>
+
+            <label for="productSpec">Product spec (optional JSON)</label>
+            <textarea id="productSpec" class="textarea-mono" placeholder='{"product_name":"Example"}'></textarea>
+
+            <div class="actions">
+              <button class="btn" id="runBtn" type="button">Run AI pipeline</button>
+              <div class="hint" id="runHint">Default: one-click demo via GET /run-agent.</div>
+            </div>
+
+            <div id="errorBox" class="error" hidden></div>
+
+            <h3 class="subsection-title">Lifecycle timeline</h3>
+            <div class="timeline pipeline" id="pipeline">
+              <div class="step" data-key="learning">
+                <div class="badge">01</div>
+                <div>
+                  <div class="step-title">Learning &amp; scenario</div>
+                  <div class="step-sub">KB + embeddings + routing.</div>
+                </div>
+                <div class="status" data-status>idle</div>
+              </div>
+              <div class="step" data-key="generate">
+                <div class="badge">02</div>
+                <div>
+                  <div class="step-title">Creative generation</div>
+                  <div class="step-sub">Blog + social + FAQ.</div>
+                </div>
+                <div class="status" data-status>idle</div>
+              </div>
+              <div class="step" data-key="compliance">
+                <div class="badge">03</div>
+                <div>
+                  <div class="step-title">Compliance / fix / HIL</div>
+                  <div class="step-sub">Auditor, Fixer, escalation.</div>
+                </div>
+                <div class="status" data-status>idle</div>
+              </div>
+              <div class="step" data-key="debate">
+                <div class="badge">04</div>
+                <div>
+                  <div class="step-title">Debate &amp; judge</div>
+                  <div class="step-sub">Performance vs advocate.</div>
+                </div>
+                <div class="status" data-status>idle</div>
+              </div>
+              <div class="step" data-key="risk">
+                <div class="badge">05</div>
+                <div>
+                  <div class="step-title">Risk &amp; strategy</div>
+                  <div class="step-sub">Scores, branches, strategy agent.</div>
+                </div>
+                <div class="status" data-status>idle</div>
+              </div>
+              <div class="step" data-key="localize">
+                <div class="badge">06</div>
+                <div>
+                  <div class="step-title">Localization</div>
+                  <div class="step-sub">Hindi + fallback logging.</div>
+                </div>
+                <div class="status" data-status>idle</div>
+              </div>
+              <div class="step" data-key="publish">
+                <div class="badge">07</div>
+                <div>
+                  <div class="step-title">Publishing</div>
+                  <div class="step-sub">Retries + channel health.</div>
+                </div>
+                <div class="status" data-status>idle</div>
+              </div>
+            </div>
+
+            <details class="collapsible" id="logDetails" open>
+              <summary>Live logs <span class="summary-hint">scrollable</span></summary>
+              <div class="logs logs-tall" id="logPanel"></div>
+            </details>
+
+            <details class="collapsible">
+              <summary>Audit viewer <span class="summary-hint">GET /audit/recent</span></summary>
+              <div class="audit-actions">
+                <button type="button" class="btn btn-small" id="btnRefreshAudit">Refresh audit trail</button>
+              </div>
+              <pre class="audit-pre" id="auditViewer">Click refresh to load memory/audit_log.json tail.</pre>
+            </details>
+          </section>
+
+          <section class="panel">
+            <h2>Outputs &amp; scores</h2>
+            <div class="cards" id="scoreCards">
+              <div class="card">
+                <h3>Brand alignment</h3>
+                <div class="metric" id="mBrand">—<span>%</span></div>
+              </div>
+              <div class="card">
+                <h3>Compliance risk</h3>
+                <div class="metric" id="mComp">—<span>%</span></div>
+              </div>
+              <div class="card">
+                <h3>Engagement</h3>
+                <div class="metric" id="mEng">—<span>%</span></div>
+              </div>
+            </div>
+
+            <details class="collapsible">
+              <summary>Impact snapshot</summary>
+              <div class="prose impact-box" id="outImpact">Run pipeline.</div>
+            </details>
+            <details class="collapsible">
+              <summary>Content calendar</summary>
+              <div class="prose" id="outCalendar"></div>
+            </details>
+            <details class="collapsible">
+              <summary>Confidence &amp; collaboration</summary>
+              <div class="prose mono-small" id="outConfidence"></div>
+              <div class="prose mono-small" id="outCollab"></div>
+            </details>
+
+            <h3 class="subsection-title">Publishing results</h3>
+            <div id="channelHealth" class="channel-health"></div>
+
+            <details class="collapsible" open>
+              <summary>Primary assets</summary>
+              <div class="out-grid">
+                <article class="out">
+                  <h3>Blog</h3>
+                  <div class="prose" id="outBlog">—</div>
+                </article>
+                <article class="out">
+                  <h3>Social</h3>
+                  <ul class="list" id="outSocial"></ul>
+                </article>
+                <article class="out">
+                  <h3>FAQ</h3>
+                  <div class="prose" id="outFaq"></div>
+                </article>
+                <article class="out">
+                  <h3>Hindi</h3>
+                  <div class="prose" id="outHi"></div>
+                </article>
+                <article class="out">
+                  <h3>Final decision</h3>
+                  <div class="prose mono-small" id="outDecision"></div>
+                </article>
+                <article class="out">
+                  <h3>Publish payload</h3>
+                  <div class="prose mono-small" id="outPublish"></div>
+                </article>
+              </div>
+            </details>
+            <p class="footer">
+              <code>GET /run-agent</code> · <code>POST /generate</code> · <code>POST /pipeline/human-decision</code> ·
+              <code>GET /audit/recent</code>
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <main id="panel-architecture" class="tab-panel" hidden role="tabpanel" data-panel="architecture">
+      <div class="shell prose-page">
+        <h1>System architecture</h1>
+        <p>
+          ACIS Content Command is a <strong>multi-agent orchestration layer</strong> over enterprise content operations:
+          grounded generation, policy enforcement, debate-based adjudication, risk-aware branching, localization, and
+          simulated publishing with recovery traces.
+        </p>
+        <h2>Agent roles</h2>
+        <ul>
+          <li><strong>Learning Agent</strong> — embedding retrieval over past outputs; merges <code>data/knowledge.json</code> (RAG-lite).</li>
+          <li><strong>Creative Agent</strong> — structured bundle (blog, 3 social, FAQ); scenario and video-pivot aware.</li>
+          <li><strong>Compliance Agent</strong> — rule + KB phrase scan; traceable flags.</li>
+          <li><strong>Fixer Agent</strong> — deterministic rewrites; fallback softening for unknown tokens.</li>
+          <li><strong>Debate cluster</strong> — Performance vs compliance advocate; <strong>Judge Agent</strong> selects hybrid path.</li>
+          <li><strong>Risk Agent</strong> — brand, compliance residual, engagement composite.</li>
+          <li><strong>Strategy Agent</strong> — video-first / blog-heavy / compliance-strict posture from scores.</li>
+          <li><strong>Localization Agent</strong> — Hindi default; offline fallback with audit log.</li>
+          <li><strong>Publisher Agent</strong> — timestamps, UTMs, retry + fallback (e.g. Instagram simulated failure).</li>
+        </ul>
+        <h2>Orchestration flow</h2>
+        <pre class="flow-diagram">
+Learning → Creative → Compliance → Fix (loop) → [HIL gate optional] → Debate → Risk (+ branches) → Strategy
+    → Format → Localization → Publish → Impact → Audit (memory/audit_log.json)
+        </pre>
+        <h2>Tooling &amp; routing</h2>
+        <p>
+          <strong>Model router</strong> labels tasks as GPT-large (reasoning) vs small-model (formatting) for judge visibility.
+          Errors funnel through retry, alternate strict generation, optional <strong>human-in-the-loop checkpoint</strong> (
+          <code>interactive_hil</code>), then publisher-level retry/fallback.
+        </p>
+      </div>
+    </main>
+
+    <main id="panel-impact" class="tab-panel" hidden role="tabpanel" data-panel="impact">
+      <div class="shell prose-page">
+        <h1>Impact model</h1>
+        <p class="muted">Values refresh after each dashboard run (last pipeline output).</p>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>Time compression</h3>
+            <div class="bar-wrap">
+              <div class="bar-label">Manual (hours)</div>
+              <div class="bar-track"><div class="bar-fill bar-manual" id="barManual" style="width: 100%"></div></div>
+            </div>
+            <div class="bar-wrap">
+              <div class="bar-label">AI pipeline (minutes)</div>
+              <div class="bar-track"><div class="bar-fill bar-ai" id="barAi" style="width: 8%"></div></div>
+            </div>
+            <p id="impactSummaryText" class="impact-lead">Run the dashboard to populate metrics.</p>
+          </div>
+          <div class="chart-card">
+            <h3>Quality &amp; engagement lift</h3>
+            <div class="bar-wrap">
+              <div class="bar-label">Compliance error reduction (%)</div>
+              <div class="bar-track"><div class="bar-fill bar-ok" id="barCompliance" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-wrap">
+              <div class="bar-label">Engagement lift (%)</div>
+              <div class="bar-track"><div class="bar-fill bar-warn" id="barEngagement" style="width: 0%"></div></div>
+            </div>
+          </div>
+        </div>
+        <p>
+          Business value: fewer compliance regressions, faster omnichannel readiness, traceable decisions for regulators and
+          investors, and measurable cycle-time reduction across marketing/legal/review silos.
+        </p>
+      </div>
+    </main>
+
+    <main id="panel-about" class="tab-panel" hidden role="tabpanel" data-panel="about">
+      <div class="shell prose-page">
+        <h1>About ACIS</h1>
+        <p><strong>Problem:</strong> Enterprise content operations are slow, error-prone, and fragmented across tools, with weak compliance traceability.</p>
+        <p><strong>Solution:</strong> An autonomous multi-agent pipeline that generates channel-ready assets, enforces policy, debates tradeoffs, scores risk, localizes, and simulates publishing with recovery — all logged for audit.</p>
+        <h2>Highlights</h2>
+        <ul>
+          <li>Multi-agent orchestration with explicit reasoning traces</li>
+          <li>Compliance automation + optional human gate</li>
+          <li>RAG-lite knowledge base for regulated verticals</li>
+          <li>Localization with offline-safe fallback</li>
+          <li>Publishing simulation with retry / fallback narratives</li>
+          <li>Append-only audit trail for enterprise readiness</li>
+        </ul>
+      </div>
+    </main>
+
+    <script>
+      const STEPS = ["learning", "generate", "compliance", "debate", "risk", "localize", "publish"];
+      const WORKFLOW_AGENTS = [
+        { id: "learning", label: "Learning" },
+        { id: "creative", label: "Creative" },
+        { id: "compliance", label: "Compliance" },
+        { id: "fixer", label: "Fixer" },
+        { id: "debate", label: "Debate" },
+        { id: "risk", label: "Risk" },
+        { id: "strategy", label: "Strategy" },
+        { id: "localize", label: "Localization" },
+        { id: "publish", label: "Publisher" },
+      ];
+
+      const el = (id) => document.getElementById(id);
+
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function showTab(name) {
+        document.querySelectorAll(".nav-tab").forEach((b) => {
+          const on = b.dataset.tab === name;
+          b.classList.toggle("active", on);
+          b.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        document.querySelectorAll(".tab-panel").forEach((p) => {
+          const on = p.dataset.panel === name;
+          p.hidden = !on;
+          p.classList.toggle("is-active", on);
+        });
+      }
+
+      document.querySelectorAll(".nav-tab").forEach((btn) => {
+        btn.addEventListener("click", () => showTab(btn.dataset.tab));
+      });
+
+      function buildWorkflowDom() {
+        const row = el("agentWorkflow");
+        row.innerHTML = "";
+        WORKFLOW_AGENTS.forEach((a, i) => {
+          if (i) {
+            const arr = document.createElement("div");
+            arr.className = "wf-arrow";
+            arr.textContent = "→";
+            row.appendChild(arr);
+          }
+          const node = document.createElement("div");
+          node.className = "wf-node";
+          node.dataset.wf = a.id;
+          node.innerHTML = `<div class="wf-name">${escapeHtml(a.label)}</div><div class="wf-state" data-wf-status>idle</div>`;
+          row.appendChild(node);
+        });
+      }
+
+      function setWorkflowState(wfId, state) {
+        const node = document.querySelector(`[data-wf="${wfId}"]`);
+        if (!node) return;
+        const st = node.querySelector("[data-wf-status]");
+        node.classList.remove("wf-running", "wf-done", "wf-idle");
+        if (state === "run") {
+          node.classList.add("wf-running");
+          st.textContent = "running";
+        } else if (state === "done") {
+          node.classList.add("wf-done");
+          st.textContent = "complete";
+        } else {
+          node.classList.add("wf-idle");
+          st.textContent = "idle";
+        }
+      }
+
+      async function simulateWorkflowSequential() {
+        resetWorkflowVisual();
+        for (const a of WORKFLOW_AGENTS) {
+          setWorkflowState(a.id, "run");
+          await new Promise((r) => setTimeout(r, 650));
+          setWorkflowState(a.id, "done");
+        }
+      }
+
+      function resetWorkflowVisual() {
+        WORKFLOW_AGENTS.forEach((a) => setWorkflowState(a.id, "idle"));
+      }
+
+      function setLoading(on, subtext) {
+        const o = el("loadingOverlay");
+        o.hidden = !on;
+        o.setAttribute("aria-busy", on ? "true" : "false");
+        if (subtext) el("loadingSub").textContent = subtext;
+      }
+
+      function setStepState(key, state) {
+        const row = document.querySelector(`[data-key="${key}"]`);
+        if (!row) return;
+        row.classList.remove("active", "done");
+        const status = row.querySelector("[data-status]");
+        if (state === "run") {
+          row.classList.add("active");
+          status.textContent = "running";
+          status.className = "status run";
+        } else if (state === "done") {
+          row.classList.add("done");
+          status.textContent = "complete";
+          status.className = "status ok";
+        } else {
+          status.textContent = "idle";
+          status.className = "status";
+        }
+      }
+
+      function resetUI() {
+        STEPS.forEach((k) => setStepState(k, "idle"));
+        el("errorBox").hidden = true;
+        el("logPanel").innerHTML = "";
+        el("routingValue").textContent = "Awaiting run…";
+      }
+
+      function routingFromLogs(logs) {
+        const routing = (logs || []).filter((l) => l.step === "routing" || (l.agent || "").includes("Model Router"));
+        if (!routing.length) return;
+        const last = routing[routing.length - 1];
+        el("routingValue").textContent = last.message || "";
+      }
+
+      function renderLogLine(row) {
+        const div = document.createElement("div");
+        div.className = "log-line";
+        const rt = row.detail && row.detail.reasoning_trace;
+        let extra = "";
+        if (rt) {
+          extra = `<div class="log-trace">Received: ${escapeHtml((rt.received_preview || "").slice(0, 220))}${
+            (rt.received_preview || "").length > 220 ? "…" : ""
+          }<br/><span class="log-trace-d">Decision: ${escapeHtml(rt.decision || "")}</span><br/><span class="log-trace-r">Why: ${escapeHtml(
+            rt.rationale || ""
+          )}</span></div>`;
+        }
+        div.innerHTML = `<div class="log-main"><span class="log-ts">${escapeHtml((row.timestamp || "").slice(11, 19))}</span> <strong>${escapeHtml(
+          row.agent
+        )}</strong> <span class="log-step">[${escapeHtml(row.step)}]</span> — ${escapeHtml(row.message)}</div>${extra}`;
+        return div;
+      }
+
+      async function animateLogs(logs) {
+        const panel = el("logPanel");
+        panel.innerHTML = "";
+        for (const row of logs || []) {
+          panel.appendChild(renderLogLine(row));
+          panel.scrollTop = panel.scrollHeight;
+          await new Promise((r) => setTimeout(r, 35));
+        }
+      }
+
+      function mapLogsToSteps(logs) {
+        const text = JSON.stringify(logs || []).toLowerCase();
+        return {
+          learning: /learning agent|knowledge retrieved|scenario=/.test(text),
+          generate: /creative agent|synthesizing blog/.test(text),
+          compliance: /compliance agent|fixer agent|escalat|auditor|applied compliance policy from kb/.test(text),
+          debate: /judge agent|performance agent|compliance advocate/.test(text),
+          risk: /risk agent|branch:|strategy agent/.test(text),
+          localize: /localization agent/.test(text),
+          publish: /publisher agent/.test(text),
+        };
+      }
+
+      async function staggerStepsFromLogs(logs) {
+        const flags = mapLogsToSteps(logs);
+        for (const key of STEPS) {
+          setStepState(key, "run");
+          await new Promise((r) => setTimeout(r, 400));
+          if (flags[key]) setStepState(key, "done");
+        }
+        STEPS.forEach((k) => {
+          if (!document.querySelector(`[data-key="${k}"].done`)) setStepState(k, "done");
+        });
+      }
+
+      function uiHint(status) {
+        if (status === "published") return "✔ success";
+        if (status === "queued") return "✔ queued";
+        if (status === "failed") return "❌ failed";
+        return status || "—";
+      }
+
+      function fillChannelHealth(pub) {
+        const host = el("channelHealth");
+        host.innerHTML = "";
+        const ch = (pub && pub.channels) || {};
+        const add = (title, obj, path) => {
+          if (!obj) return;
+          const d = document.createElement("div");
+          d.className = "ch-row";
+          const st = obj.status || obj.ui_hint || "";
+          d.innerHTML = `<span class="ch-title">${escapeHtml(title)}</span><span class="ch-status">${escapeHtml(uiHint(st))}</span>`;
+          host.appendChild(d);
+        };
+        add("Website", ch.website);
+        (ch.social_media || []).forEach((s, i) => {
+          add(`${s.platform || "Social"} #${i + 1}`, s);
+        });
+        add("Knowledge base", ch.knowledge_base);
+        const rec = (pub && pub.publisher_recovery_log) || [];
+        if (rec.length) {
+          const h = document.createElement("div");
+          h.className = "recovery-block";
+          h.innerHTML = "<strong>Recovery trace</strong>";
+          rec.forEach((r) => {
+            const line = document.createElement("div");
+            const u = r.ui === "retrying" ? "⚠ retrying" : r.ui === "failed" ? "❌ failed" : r.outcome || "";
+            line.className = "recovery-line";
+            line.textContent = `${r.platform || ""} ${r.phase || ""}: ${u} ${r.message || ""}`.trim();
+            h.appendChild(line);
+          });
+          host.appendChild(h);
+        }
+      }
+
+      function fillImpactCharts(data) {
+        const imp = data.impact || {};
+        window.__lastImpact = imp;
+        el("impactSummaryText").textContent = imp.time_savings_display || imp.time_savings_summary || "";
+        const mh = imp.manual_effort_hours || 2;
+        const ai = imp.ai_pipeline_minutes || 5;
+        el("barAi").style.width = `${Math.min(100, (ai / (mh * 60)) * 100)}%`;
+        el("barCompliance").style.width = `${Math.min(100, imp.compliance_error_reduction_pct || 0)}%`;
+        el("barEngagement").style.width = `${Math.min(100, (imp.engagement_lift_pct || 0) * 1.2)}%`;
+      }
+
+      function fillOutputs(data) {
+        const scores = data.scores || {};
+        el("mBrand").innerHTML = `${scores.brand_alignment ?? "—"}<span>%</span>`;
+        el("mComp").innerHTML = `${scores.compliance_risk ?? "—"}<span>%</span>`;
+        el("mEng").innerHTML = `${scores.engagement_score ?? "—"}<span>%</span>`;
+
+        const imp = data.impact || {};
+        el("outImpact").innerHTML =
+          `<strong>${escapeHtml(imp.time_savings_display || imp.time_savings_summary || "")}</strong><br/>` +
+          `Compliance error reduction: <strong>${imp.compliance_error_reduction_pct ?? "—"}%</strong><br/>` +
+          `Engagement lift: <strong>${imp.engagement_lift_pct ?? "—"}%</strong>`;
+
+        el("outCalendar").textContent = (data.content_calendar || []).length
+          ? JSON.stringify(data.content_calendar, null, 2)
+          : "—";
+        el("outConfidence").textContent = JSON.stringify(data.confidence_explanation || {}, null, 2);
+        el("outCollab").textContent = JSON.stringify(data.collaboration_summary || {}, null, 2);
+
+        el("outBlog").textContent = data.blog || "";
+        const ul = el("outSocial");
+        ul.innerHTML = "";
+        (data.social_posts || []).forEach((s) => {
+          const li = document.createElement("li");
+          li.textContent = s;
+          ul.appendChild(li);
+        });
+        el("outFaq").textContent = data.faq || "";
+        const loc = data.localization || {};
+        el("outHi").textContent =
+          (data.localized_version || "") + (loc.used_offline_fallback ? "\n\n[Offline translation fallback]" : "");
+
+        el("outDecision").textContent = JSON.stringify(data.final_decision || {}, null, 2);
+        el("outPublish").textContent = JSON.stringify(data.publishing_output || {}, null, 2);
+        fillChannelHealth(data.publishing_output || {});
+        fillImpactCharts(data);
+      }
+
+      function parseProductSpec(raw) {
+        const t = (raw || "").trim();
+        if (!t) return null;
+        return JSON.parse(t);
+      }
+
+      async function refreshAudit() {
+        try {
+          const res = await fetch("/audit/recent?limit=12");
+          const body = await res.json();
+          el("auditViewer").textContent = JSON.stringify(body.records || [], null, 2);
+        } catch (e) {
+          el("auditViewer").textContent = String(e);
+        }
+      }
+
+      el("btnRefreshAudit").addEventListener("click", refreshAudit);
+
+      let pendingCheckpoint = null;
+
+      function openHil(data) {
+        pendingCheckpoint = data.checkpoint_id;
+        el("hilCheckpoint").textContent = `checkpoint_id: ${pendingCheckpoint} · run ${data.run_uuid || ""}`;
+        el("hilModal").hidden = false;
+      }
+
+      function closeHil() {
+        el("hilModal").hidden = true;
+        pendingCheckpoint = null;
+      }
+
+      async function postHumanDecision(decision) {
+        if (!pendingCheckpoint) return;
+        setLoading(true, "Applying human decision…");
+        try {
+          const res = await fetch("/pipeline/human-decision", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ checkpoint_id: pendingCheckpoint, decision }),
+          });
+          const response = await res.json();
+          console.log(response);
+          if (!res.ok) throw new Error(response.detail || res.statusText);
+          closeHil();
+          await animateLogs(response.pipeline_logs || []);
+          routingFromLogs(response.pipeline_logs);
+          await simulateWorkflowSequential();
+          STEPS.forEach((k) => setStepState(k, "done"));
+          fillOutputs(response);
+          el("runHint").textContent = "Human decision applied — pipeline complete.";
+        } catch (err) {
+          el("errorBox").hidden = false;
+          el("errorBox").textContent = String(err.message || err);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      el("hilApprove").addEventListener("click", () => postHumanDecision("approve"));
+      el("hilReject").addEventListener("click", () => postHumanDecision("reject"));
+
+      el("runBtn").addEventListener("click", async () => {
+        el("errorBox").hidden = true;
+        resetUI();
+        resetWorkflowVisual();
+        el("runBtn").disabled = true;
+        setLoading(true, "Running agents…");
+        el("runHint").textContent = "Running…";
+        STEPS.forEach((k) => setStepState(k, "run"));
+
+        try {
+          let res;
+          let response = {};
+          const useHil = el("interactiveHil").checked;
+
+          if (useHil) {
+            const prompt = el("prompt").value.trim() || "Enterprise content launch brief.";
+            let product_spec = null;
+            try {
+              product_spec = parseProductSpec(el("productSpec").value);
+            } catch (e) {
+              throw new Error("Product spec must be valid JSON or empty.");
+            }
+            res = await fetch("/generate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ prompt, product_spec, interactive_hil: true }),
+            });
+          } else {
+            res = await fetch("/run-agent");
+          }
+
+          try {
+            response = await res.json();
+          } catch {
+            response = {};
+          }
+          console.log(response);
+
+          if (!res.ok) {
+            const detail = response.detail;
+            const msg =
+              typeof detail === "string"
+                ? detail
+                : Array.isArray(detail)
+                  ? JSON.stringify(detail)
+                  : JSON.stringify(detail || response);
+            throw new Error(msg || res.statusText || "Request failed");
+          }
+
+          if (response.human_in_loop_required) {
+            STEPS.forEach((k) => setStepState(k, "idle"));
+            setStepState("compliance", "run");
+            await animateLogs(response.pipeline_logs || []);
+            routingFromLogs(response.pipeline_logs);
+            openHil(response);
+            el("runHint").textContent = "Paused for human approval.";
+            return;
+          }
+
+          await animateLogs(response.pipeline_logs || []);
+          routingFromLogs(response.pipeline_logs);
+          await simulateWorkflowSequential();
+          await staggerStepsFromLogs(response.pipeline_logs || []);
+          fillOutputs(response);
+          el("runHint").textContent = "Completed.";
+        } catch (err) {
+          el("errorBox").hidden = false;
+          el("errorBox").textContent = String(err.message || err);
+          STEPS.forEach((k) => setStepState(k, "idle"));
+        } finally {
+          el("runBtn").disabled = false;
+          setLoading(false);
+        }
+      });
+
+      buildWorkflowDom();
+    </script>
+  </body>
+</html>

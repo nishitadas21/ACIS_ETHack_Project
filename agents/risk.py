@@ -1,47 +1,46 @@
-import json
+"""
+Risk Agent — composite scoring for brand alignment, residual compliance risk, and engagement.
+"""
 
-from sympy import content
+import json
+from pathlib import Path
+
 from memory.vector_store import check_brand_similarity
 
-def risk_confidence_score(content):
-    
+RULES_PATH = Path(__file__).resolve().parent.parent / "data" / "compliance_rules.json"
+
+
+def risk_confidence_score(content: str) -> dict:
     score = {
         "brand_alignment": 0,
         "compliance_risk": 0,
-        "engagement_score": 0
+        "engagement_score": 0,
     }
 
-    # Load rules
-    with open("data/compliance_rules.json") as f:
-        rules = json.load(f)
+    rules = json.loads(RULES_PATH.read_text(encoding="utf-8"))
+    lower = content.lower()
 
-    # Compliance Risk
-    for phrase in rules["banned_phrases"]:
-        if phrase in content:
-            score["compliance_risk"] += 50
+    risk = 8
+    for phrase in rules.get("banned_phrases", []):
+        if phrase.lower() in lower:
+            risk += 28
+    score["compliance_risk"] = min(risk, 100)
 
-    if score["compliance_risk"] == 0:
-        score["compliance_risk"] = 10  # low base risk
-
-    # Brand Alignment (simple keyword logic)
     similarity = check_brand_similarity(content)
-    score["brand_alignment"] = int(similarity * 100)
+    score["brand_alignment"] = int(round(float(similarity) * 100))
+    score["brand_alignment"] = max(45, min(score["brand_alignment"], 98))
 
-    # Engagement Score (based on tone)
-    # Engagement Score (smarter logic)
-    engagement = 50
-
-    if "!" in content:
-        engagement += 15
-
-    if any(word in content.lower() for word in ["discover", "unlock", "introducing"]):
-        engagement += 15
-
-    if any(word in content.lower() for word in ["join", "start", "explore"]):
+    engagement = 52
+    if any(word in lower for word in ("read the", "pilot", "today", "update", "workflow")):
+        engagement += 12
+    if any(word in lower for word in ("discover", "unlock", "new:", "ready")):
         engagement += 10
-
-    if len(content.split()) > 12:
-        engagement += 10
+    if any(word in lower for word in ("join", "start", "explore", "contact")):
+        engagement += 8
+    if len(content.split()) > 80:
+        engagement += 8
+    if "?" in content:
+        engagement += 5
 
     score["engagement_score"] = min(engagement, 100)
 

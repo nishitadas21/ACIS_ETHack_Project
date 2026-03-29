@@ -1,7 +1,16 @@
 {
-  "banned_phrases": ["guaranteed returns", "100% safe"],
+  "banned_phrases": [
+    "guaranteed returns",
+    "100% safe",
+    "risk-free",
+    "no risk",
+    "instant profit"
+  ],
   "suggestions": {
-    "guaranteed returns": "potential returns",
-    "100% safe": "highly secure"
+    "guaranteed returns": "potential returns based on historical performance",
+    "100% safe": "designed with strong security controls",
+    "risk-free": "aims to reduce common operational risks",
+    "no risk": "residual risks remain; review disclosures",
+    "instant profit": "potential value over time"
   }
 }

@@ -1,0 +1,438 @@
+[
+  {
+    "recorded_at": "2026-03-29T09:32:19.514601+00:00",
+    "run_uuid": "b01a0166",
+    "prompt": "test",
+    "product_spec_meta": {},
+    "generated_preview": "BLOG:\nWe’re introducing an update centered on test Memory nudge: Lean into professional tone and brand-safe wording.. It improves collaboration, publishing, and measurement.\n\nClearer ownership, faster reviews, analytics tied to outcomes — iterate with telemetry.\n\nSOCIAL (ready to post):\n1. New: test Memory nudge: Lean into professional tone and brand-safe wording. — guardrailed publishing. Overview in our latest post.\n2. Enterprise content ops tip: one pipeline for brand + compliance + distribution.\n3. Pragmatic rollout plan inside: milestones, risks, success metrics.\n\nFAQ:\nQ: Who is this release for?\nA: Enterprise content, marketing, and compliance teams.\n\nQ: How do you handle risky claims?\nA: Automated checks plus human review by policy tier.\n\nQ: Where is implementation help?\nA: Customer success or support ticketing.\n\nNext step: read the full update and pick one workflow to pilot this week.",
+    "issues_history": [
+      {
+        "round": 0,
+        "issues": []
+      }
+    ],
+    "final_decision": {
+      "reason": "Hybrid decision: preserve engagement lead-in with advocate-cleaned body.",
+      "winner": "hybrid",
+      "alternate_strategy_used": false,
+      "human_in_loop_escalation": false,
+      "scenario": "general",
+      "video_pivot": false,
+      "strategy": {
+        "primary_mode": "video-first",
+        "rationale": "Audience signals favor motion formats - lead with short-form video and repurpose long-form blog as canonical reference.",
+        "channel_priority": [
+          "video",
+          "reels",
+          "blog",
+          "community"
+        ]
+      }
+    },
+    "scores": {
+      "brand_alignment": 64,
+      "compliance_risk": 8,
+      "engagement_score": 87
+    },
+    "human_in_loop": false,
+    "strategy": {
+      "primary_mode": "video-first",
+      "rationale": "Audience signals favor motion formats - lead with short-form video and repurpose long-form blog as canonical reference.",
+      "channel_priority": [
+        "video",
+        "reels",
+        "blog",
+        "community"
+      ],
+      "inputs": {
+        "compliance_risk": 8,
+        "engagement_score": 87,
+        "brand_alignment": 64,
+        "scenario": "general",
+        "video_pivot": false
+      }
+    },
+    "impact": {
+      "manual_effort_hours": 2.0,
+      "ai_pipeline_minutes": 4.5,
+      "time_savings_summary": "Manual: 2 hrs -> AI: 4.5 mins (120 min vs 4.5 min wall time)",
+      "compliance_error_reduction_pct": 85.0,
+      "engagement_lift_pct": 35.0,
+      "assumptions": [
+        "Manual estimate assumes writer + compliance + localization handoffs.",
+        "AI estimate includes automated checks and simulated routing latency."
+      ]
+    }
+  },
+  {
+    "recorded_at": "2026-03-29T09:42:49.792147+00:00",
+    "run_uuid": "40d0953b",
+    "prompt": "test launch",
+    "product_spec_meta": {
+      "type": "structured",
+      "keys": [
+        "sku"
+      ]
+    },
+    "generated_preview": "BLOG:\nToday we’re sharing an update on Brand-aligned rewrite (professional, trustworthy): BLOG: Ready for momentum? Test launch [internal product knowledge — confidential] { \"sku\": \"1\" } memory nudge: lean into professional tone and brand-safe wording.. Our teams built this release to help customers operate with clarity and strong governance.\n\nCapabilities may vary by plan and region; timelines depend on rollout and internal approvals. We describe features factually and avoid absolute promises. Customers should review official documentation and speak with their account team for specifics.\n\nSOCIAL:\n1. Measured progress: documented update for regulated teams — read the blog and loop in your CSM.\n2. Shipping responsibly: transparency + pragmatic workflows. Details on our site (terms apply).\n3. For practitioners: what changed, what to validate in QA, and where canonical guidance lives.\n\nFAQ:\nQ: Who is this release for?\nA: Enterprise content, marketing, and compliance teams.\n\nQ: How do you handle risky claims?\nA: Automated checks plus human review by policy tier.\n\nQ: Where is implementation help?\nA: Customer success or support ticketing.",
+    "issues_history": [
+      {
+        "round": 0,
+        "issues": []
+      }
+    ],
+    "final_decision": {
+      "reason": "Hybrid decision: preserve engagement lead-in with advocate-cleaned body.",
+      "winner": "hybrid",
+      "alternate_strategy_used": false,
+      "human_in_loop_escalation": false,
+      "scenario": "engagement_boost",
+      "video_pivot": false,
+      "strategy": {
+        "primary_mode": "video-first",
+        "rationale": "Audience signals favor motion formats - lead with short-form video and repurpose long-form blog as canonical reference.",
+        "channel_priority": [
+          "video",
+          "reels",
+          "blog",
+          "community"
+        ]
+      }
+    },
+    "scores": {
+      "brand_alignment": 67,
+      "compliance_risk": 8,
+      "engagement_score": 87
+    },
+    "human_in_loop": false,
+    "strategy": {
+      "primary_mode": "video-first",
+      "rationale": "Audience signals favor motion formats - lead with short-form video and repurpose long-form blog as canonical reference.",
+      "channel_priority": [
+        "video",
+        "reels",
+        "blog",
+        "community"
+      ],
+      "inputs": {
+        "compliance_risk": 8,
+        "engagement_score": 87,
+        "brand_alignment": 67,
+        "scenario": "engagement_boost",
+        "video_pivot": false
+      }
+    },
+    "impact": {
+      "manual_effort_hours": 2.0,
+      "ai_pipeline_minutes": 4.5,
+      "time_savings_summary": "Manual: 2 hrs -> AI: 4.5 mins (120 min vs 4.5 min wall time)",
+      "time_savings_display": "Manual: 2 hrs → AI: 4.5 mins",
+      "compliance_error_reduction_pct": 85.0,
+      "engagement_lift_pct": 35.0,
+      "assumptions": [
+        "Manual estimate assumes writer + compliance + localization handoffs.",
+        "AI estimate includes automated checks and simulated routing latency."
+      ]
+    }
+  },
+  {
+    "recorded_at": "2026-03-29T09:48:38.235179+00:00",
+    "run_uuid": "d4c453ba",
+    "prompt": "Product launch: ACIS LedgerSave — digital savings for young professionals. Emphasize transparency and regulated markets.",
+    "product_spec_meta": {
+      "type": "structured",
+      "keys": [
+        "product_name",
+        "segment",
+        "key_features",
+        "launch_markets",
+        "restricted_claims"
+      ]
+    },
+    "generated_preview": "BLOG:\nToday we’re sharing an update on Product launch: ACIS LedgerSave — digital savings for young professionals. Emphasize transparency and regulated markets. [INTERNAL PRODUCT KNOWLEDGE — CONFIDENTIAL] { \"product_name\": \"LedgerSave\", \"segment\": \"B2C fintech\", \"key_features\": [. Our teams built this release to help customers operate with clarity and strong governance.\n\nCapabilities may vary by plan and region; timelines depend on rollout and internal approvals. We describe features factually and avoid absolute promises. Customers should review official documentation and speak with their account team for specifics. Customers value potential returns based on historical performance when outcomes are favorable.\n\nSOCIAL (ready to post):\n1. Measured progress: documented update for regulated teams — read the blog and loop in your CSM.\n2. Shipping responsibly: transparency + pragmatic workflows. Details on our site (terms apply).\n3. For practitioners: what changed, what to validate in QA, and where canonical guidance lives.\n\nFAQ:\nQ: Who is this release for?\nA: Enterprise content, marketing, and compliance teams.\n\nQ: How do you handle risky claims?\nA: Automated checks plus human review by policy tier.\n\nQ: Where is implementation help?\nA: Customer success or support ticketing.",
+    "issues_history": [
+      {
+        "round": 0,
+        "issues": [
+          "guaranteed returns"
+        ]
+      },
+      {
+        "round": 1,
+        "issues": []
+      }
+    ],
+    "final_decision": {
+      "reason": "Hybrid decision: preserve engagement lead-in with advocate-cleaned body.",
+      "winner": "hybrid",
+      "alternate_strategy_used": false,
+      "human_in_loop_escalation": false,
+      "scenario": "high_compliance",
+      "video_pivot": false,
+      "strategy": {
+        "primary_mode": "compliance-strict mode",
+        "rationale": "Residual compliance risk or regulated scenario - prioritize legal review cadence, conservative claims, and documentation-heavy assets.",
+        "channel_priority": [
+          "legal_review",
+          "blog",
+          "email",
+          "social_proof"
+        ]
+      }
+    },
+    "scores": {
+      "brand_alignment": 61,
+      "compliance_risk": 8,
+      "engagement_score": 87
+    },
+    "human_in_loop": false,
+    "strategy": {
+      "primary_mode": "compliance-strict mode",
+      "rationale": "Residual compliance risk or regulated scenario - prioritize legal review cadence, conservative claims, and documentation-heavy assets.",
+      "channel_priority": [
+        "legal_review",
+        "blog",
+        "email",
+        "social_proof"
+      ],
+      "inputs": {
+        "compliance_risk": 8,
+        "engagement_score": 87,
+        "brand_alignment": 61,
+        "scenario": "high_compliance",
+        "video_pivot": false
+      }
+    },
+    "impact": {
+      "manual_effort_hours": 2.0,
+      "ai_pipeline_minutes": 4.5,
+      "time_savings_summary": "Manual: 2 hrs -> AI: 4.5 mins (120 min vs 4.5 min wall time)",
+      "time_savings_display": "Manual: 2 hrs → AI: 4.5 mins",
+      "compliance_error_reduction_pct": 85.0,
+      "engagement_lift_pct": 35.0,
+      "assumptions": [
+        "Manual estimate assumes writer + compliance + localization handoffs.",
+        "AI estimate includes automated checks and simulated routing latency."
+      ]
+    }
+  },
+  {
+    "recorded_at": "2026-03-29T09:55:12.859476+00:00",
+    "run_uuid": "65fdf9ab",
+    "prompt": "product launch fintech savings",
+    "product_spec_meta": {},
+    "generated_preview": "BLOG:\nToday we’re sharing an update on Brand-aligned rewrite (professional, trustworthy): BLOG: Today we’re sharing an update on product launch fintech savings Memory nudge: Maintain balanced tone from prior winning runs. Constraints: realistic claims only;. Our teams built this release to help customers operate with clarity and strong governance.\n\nCapabilities may vary by plan and region; timelines depend on rollout and internal approvals. We describe features factually and avoid absolute promises. Customers should review official documentation and speak with their account team for specifics.\n\nSOCIAL:\n1. Measured progress: documented update for regulated teams — read the blog and loop in your CSM.\n2. Shipping responsibly: transparency + pragmatic workflows. Details on our site (terms apply).\n3. For practitioners: what changed, what to validate in QA, and where canonical guidance lives.\n\nFAQ:\nQ: Who is this release for?\nA: Enterprise content, marketing, and compliance teams.\n\nQ: How do you handle risky claims?\nA: Automated checks plus human review by policy tier.\n\nQ: Where is implementation help?\nA: Customer success or support ticketing.",
+    "issues_history": [
+      {
+        "round": 0,
+        "issues": [
+          "guaranteed returns"
+        ]
+      },
+      {
+        "round": 1,
+        "issues": []
+      }
+    ],
+    "final_decision": {
+      "reason": "Hybrid decision: preserve engagement lead-in with advocate-cleaned body.",
+      "winner": "hybrid",
+      "alternate_strategy_used": false,
+      "human_in_loop_escalation": false,
+      "scenario": "high_compliance",
+      "video_pivot": false,
+      "strategy": {
+        "primary_mode": "compliance-strict mode",
+        "rationale": "Residual compliance risk or regulated scenario - prioritize legal review cadence, conservative claims, and documentation-heavy assets.",
+        "channel_priority": [
+          "legal_review",
+          "blog",
+          "email",
+          "social_proof"
+        ]
+      }
+    },
+    "scores": {
+      "brand_alignment": 65,
+      "compliance_risk": 8,
+      "engagement_score": 77
+    },
+    "human_in_loop": false,
+    "strategy": {
+      "primary_mode": "compliance-strict mode",
+      "rationale": "Residual compliance risk or regulated scenario - prioritize legal review cadence, conservative claims, and documentation-heavy assets.",
+      "channel_priority": [
+        "legal_review",
+        "blog",
+        "email",
+        "social_proof"
+      ],
+      "inputs": {
+        "compliance_risk": 8,
+        "engagement_score": 77,
+        "brand_alignment": 65,
+        "scenario": "high_compliance",
+        "video_pivot": false
+      }
+    },
+    "impact": {
+      "manual_effort_hours": 2.0,
+      "ai_pipeline_minutes": 4.5,
+      "time_savings_summary": "Manual: 2 hrs -> AI: 4.5 mins (120 min vs 4.5 min wall time)",
+      "time_savings_display": "Manual: 2 hrs → AI: 4.5 mins",
+      "compliance_error_reduction_pct": 85.0,
+      "engagement_lift_pct": 25.0,
+      "assumptions": [
+        "Manual estimate assumes writer + compliance + localization handoffs.",
+        "AI estimate includes automated checks and simulated routing latency."
+      ]
+    }
+  },
+  {
+    "recorded_at": "2026-03-29T10:24:48.722335+00:00",
+    "run_uuid": "3a0e0f74",
+    "prompt": "hi",
+    "product_spec_meta": {},
+    "generated_preview": "BLOG:\nWe’re introducing an update centered on hi Memory nudge: Maintain balanced tone from prior winning runs.. It improves collaboration, publishing, and measurement.\n\nClearer ownership, faster reviews, analytics tied to outcomes — iterate with telemetry.\n\nSOCIAL (ready to post):\n1. New: hi Memory nudge: Maintain balanced tone from prior winning runs. — guardrailed publishing. Overview in our latest post.\n2. Enterprise content ops tip: one pipeline for brand + compliance + distribution.\n3. Pragmatic rollout plan inside: milestones, risks, success metrics.\n\nFAQ:\nQ: Who is this release for?\nA: Enterprise content, marketing, and compliance teams.\n\nQ: How do you handle risky claims?\nA: Automated checks plus human review by policy tier.\n\nQ: Where is implementation help?\nA: Customer success or support ticketing.\n\nNext step: read the full update and pick one workflow to pilot this week.",
+    "issues_history": [
+      {
+        "round": 0,
+        "issues": []
+      }
+    ],
+    "final_decision": {
+      "reason": "Hybrid decision: preserve engagement lead-in with advocate-cleaned body.",
+      "winner": "hybrid",
+      "alternate_strategy_used": false,
+      "human_in_loop_escalation": false,
+      "scenario": "general",
+      "video_pivot": false,
+      "strategy": {
+        "primary_mode": "video-first",
+        "rationale": "Audience signals favor motion formats - lead with short-form video and repurpose long-form blog as canonical reference.",
+        "channel_priority": [
+          "video",
+          "reels",
+          "blog",
+          "community"
+        ]
+      }
+    },
+    "scores": {
+      "brand_alignment": 68,
+      "compliance_risk": 8,
+      "engagement_score": 87
+    },
+    "human_in_loop": false,
+    "strategy": {
+      "primary_mode": "video-first",
+      "rationale": "Audience signals favor motion formats - lead with short-form video and repurpose long-form blog as canonical reference.",
+      "channel_priority": [
+        "video",
+        "reels",
+        "blog",
+        "community"
+      ],
+      "inputs": {
+        "compliance_risk": 8,
+        "engagement_score": 87,
+        "brand_alignment": 68,
+        "scenario": "general",
+        "video_pivot": false
+      }
+    },
+    "impact": {
+      "manual_effort_hours": 2.0,
+      "ai_pipeline_minutes": 4.5,
+      "time_savings_summary": "Manual: 2 hrs -> AI: 4.5 mins (120 min vs 4.5 min wall time)",
+      "time_savings_display": "Manual: 2 hrs → AI: 4.5 mins",
+      "compliance_error_reduction_pct": 85.0,
+      "engagement_lift_pct": 35.0,
+      "assumptions": [
+        "Manual estimate assumes writer + compliance + localization handoffs.",
+        "AI estimate includes automated checks and simulated routing latency."
+      ]
+    }
+  },
+  {
+    "recorded_at": "2026-03-29T10:27:39.235630+00:00",
+    "run_uuid": "6b114b50",
+    "prompt": "Product launch: ACIS LedgerSave — digital savings for young professionals. Emphasize transparency and regulated markets.",
+    "product_spec_meta": {
+      "type": "structured",
+      "keys": [
+        "product_name",
+        "segment",
+        "key_features",
+        "launch_markets",
+        "restricted_claims"
+      ]
+    },
+    "generated_preview": "BLOG:\nToday we’re sharing an update on Product launch: ACIS LedgerSave — digital savings for young professionals. Emphasize transparency and regulated markets. [INTERNAL PRODUCT KNOWLEDGE — CONFIDENTIAL] { \"product_name\": \"LedgerSave\", \"segment\": \"B2C fintech\", \"key_features\": [. Our teams built this release to help customers operate with clarity and strong governance.\n\nCapabilities may vary by plan and region; timelines depend on rollout and internal approvals. We describe features factually and avoid absolute promises. Customers should review official documentation and speak with their account team for specifics. Customers value potential returns based on historical performance when outcomes are favorable.\n\nSOCIAL (ready to post):\n1. Measured progress: documented update for regulated teams — read the blog and loop in your CSM.\n2. Shipping responsibly: transparency + pragmatic workflows. Details on our site (terms apply).\n3. For practitioners: what changed, what to validate in QA, and where canonical guidance lives.\n\nFAQ:\nQ: Who is this release for?\nA: Enterprise content, marketing, and compliance teams.\n\nQ: How do you handle risky claims?\nA: Automated checks plus human review by policy tier.\n\nQ: Where is implementation help?\nA: Customer success or support ticketing.",
+    "issues_history": [
+      {
+        "round": 0,
+        "issues": [
+          "guaranteed returns"
+        ]
+      },
+      {
+        "round": 1,
+        "issues": []
+      }
+    ],
+    "final_decision": {
+      "reason": "Hybrid decision: preserve engagement lead-in with advocate-cleaned body.",
+      "winner": "hybrid",
+      "alternate_strategy_used": false,
+      "human_in_loop_escalation": false,
+      "scenario": "high_compliance",
+      "video_pivot": false,
+      "strategy": {
+        "primary_mode": "compliance-strict mode",
+        "rationale": "Residual compliance risk or regulated scenario - prioritize legal review cadence, conservative claims, and documentation-heavy assets.",
+        "channel_priority": [
+          "legal_review",
+          "blog",
+          "email",
+          "social_proof"
+        ]
+      }
+    },
+    "scores": {
+      "brand_alignment": 67,
+      "compliance_risk": 8,
+      "engagement_score": 87
+    },
+    "human_in_loop": false,
+    "strategy": {
+      "primary_mode": "compliance-strict mode",
+      "rationale": "Residual compliance risk or regulated scenario - prioritize legal review cadence, conservative claims, and documentation-heavy assets.",
+      "channel_priority": [
+        "legal_review",
+        "blog",
+        "email",
+        "social_proof"
+      ],
+      "inputs": {
+        "compliance_risk": 8,
+        "engagement_score": 87,
+        "brand_alignment": 67,
+        "scenario": "high_compliance",
+        "video_pivot": false
+      }
+    },
+    "impact": {
+      "manual_effort_hours": 2.0,
+      "ai_pipeline_minutes": 4.5,
+      "time_savings_summary": "Manual: 2 hrs -> AI: 4.5 mins (120 min vs 4.5 min wall time)",
+      "time_savings_display": "Manual: 2 hrs → AI: 4.5 mins",
+      "compliance_error_reduction_pct": 85.0,
+      "engagement_lift_pct": 35.0,
+      "assumptions": [
+        "Manual estimate assumes writer + compliance + localization handoffs.",
+        "AI estimate includes automated checks and simulated routing latency."
+      ]
+    }
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "fintech_rules": [
+    "Do not use guaranteed returns",
+    "Always include disclaimers where performance is mentioned",
+    "Avoid absolute claims such as '100% safe' or 'no risk'",
+    "Reference regulatory context when marketing to retail investors"
+  ],
+  "additional_banned_phrases": [
+    "double your money overnight",
+    "risk-free wealth"
+  ],
+  "auditor_merge_phrases": [
+    "instant millionaire",
+    "can't lose"
+  ],
+  "brand_voice": [
+    "Professional, trustworthy tone",
+    "Prefer 'may', 'designed to', 'aims to' over absolute statements"
+  ]
+}
